@@ -1,6 +1,4 @@
-/* Code written by: IMT2021055 - Vidhish Trivedi
-   Project made as part of Operating Systems course at IIIT-Bangalore.
-*/
+
 #include <unistd.h>
 #include "./../header/Product.h"
 #include "./../header/my_macros.h"

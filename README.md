@@ -107,9 +107,7 @@ target/client_exe
 
 - **Semaphore**: A semaphore has been used to implement a lock on the payment gateway. The server allows only one customer to enter the payment gateway using binary semaphore.
 
-## Authors
 
-- [@Vidhish-Trivedi](https://github.com/Vidhish-Trivedi)
 
 ## License
 
