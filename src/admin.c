@@ -25,26 +25,38 @@ Admin getAdmin(int ID)
 	return c;
 }
 
-// No locking required.
+// Advisory write lock is required to prevent race conditions during product insertion.
 Product addProduct(Product p)
 {
+	int i = p.id - 1;
 	int fd = open(PRODUCT_FILE, O_RDWR);
 	lseek(fd, 0, SEEK_SET);
-	bool res;
-	res = false;
+	bool res = false;
+
+	int fl1;
+	struct flock lock;
+	lock.l_type = F_WRLCK;
+	lock.l_whence = SEEK_SET;
+	lock.l_start = i * sizeof(Product);
+	lock.l_len = sizeof(Product);
+	lock.l_pid = getpid();
+
+	fl1 = fcntl(fd, F_SETLKW, &lock);
 
 	Product t;
-	lseek(fd, (p.id - 1) * sizeof(Product), SEEK_SET);
+	lseek(fd, i * sizeof(Product), SEEK_SET);
 	read(fd, &t, sizeof(Product));
 
 	if (p.id == t.id && t.quantity >= 0)
 	{
+		lock.l_type = F_UNLCK;
+		fcntl(fd, F_SETLK, &lock);
 		close(fd);
 		p.id = -1;
 		return (p);
 	}
 
-	lseek(fd, (p.id - 1) * sizeof(Product), SEEK_SET);
+	lseek(fd, i * sizeof(Product), SEEK_SET);
 	int j = write(fd, &p, sizeof(Product));
 	printf("j: %d\n", j);
 	if (j != 0)
@@ -57,6 +69,8 @@ Product addProduct(Product p)
 		res = false;
 	}
 
+	lock.l_type = F_UNLCK;
+	fcntl(fd, F_SETLK, &lock);
 	close(fd);
 	if (res)
 	{
@@ -218,6 +232,7 @@ int generateLog()
     }
 	k = sprintf(buf, "--------------------------------------------------------------\n");
 	write(fd, buf, k);
+	free(product_array);
 	close(fd);
 	return (0);
 }

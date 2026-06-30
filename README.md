@@ -18,7 +18,7 @@ sudo apt install make
 - To compile the code and generate the executable files, run the following commands:
 
 ```bash
-cd Online-Retail-Store
+cd VirtualBazaar-main
 gcc ./src/set_up_data.c -o target/dataWriter
 target/dataWriter
 ```
@@ -34,7 +34,7 @@ make target/client_exe
 
 ```bash
 sudo chmod 777 install.sh
-./install
+./install.sh
 ```
 
 - To run the server-side program, run the following:
@@ -101,11 +101,13 @@ target/client_exe
 
 - **Multithreading**: Multithreading is used to handle multiple client connections simultaneously. Each client connection is handled by a separate thread, allowing the server to handle multiple requests at the same time. This improves the performance of the system and ensures that the user experience is not affected by the number of clients connected to the server. (Used to set up a concurrent server).
 
-- **File Locking**: File locking is used to prevent multiple clients from accessing the same file simultaneously. When a client accesses a file, the specific record of the file is locked, preventing other clients from accessing it until the first client has finished. This ensures that the data in the file is not corrupted due to multiple clients accessing it at the same time.
+- **File Locking**: File locking is used to prevent multiple clients from accessing the same file simultaneously. When a client accesses a file, the specific record of the file is locked (using `fcntl` advisory locks), preventing other clients from accessing it until the first client has finished. This ensures that the data in the file is not corrupted due to multiple clients accessing it at the same time.
 
 - **File Handling**: For reading from data files and writing to data files. This makes use of read() and write() system calls and allows us to persistently store data.
 
-- **Semaphore**: A semaphore has been used to implement a lock on the payment gateway. The server allows only one customer to enter the payment gateway using binary semaphore.
+- **Semaphore**: A semaphore has been used to implement a lock on the payment gateway. The server allows only one customer to enter the payment gateway using a binary semaphore.
+
+- **Memory Management & Safety**: All dynamically allocated memory buffers (e.g., product lists, active shopping carts) are explicitly deallocated using `free()` after socket operations complete, ensuring the server runs reliably without leaking memory.
 
 
 

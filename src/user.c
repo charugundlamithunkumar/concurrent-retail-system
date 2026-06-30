@@ -398,4 +398,6 @@ void payment(int nsd, Query q)
 	{
 		write(nsd, "No item in your cart can be bought! Update cart to continue.\n", sizeof("No item in your cart can be bought! Update cart to continue.\n"));
 	}
+	free(p_arr);
+	free(p_arr_un);
 }

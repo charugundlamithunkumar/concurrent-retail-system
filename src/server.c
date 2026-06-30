@@ -47,6 +47,7 @@ void server(int nsd)
 					Product *p_arr = malloc(sizeof(Product) * MAX_PRODUCTS);
 					p_arr = getAllProducts(p_arr);
 					write(nsd, p_arr, sizeof(Product) * MAX_PRODUCTS);
+					free(p_arr);
 				}
 				else if (q.query_num == 2)
 				{
@@ -54,6 +55,7 @@ void server(int nsd)
 					Product *p_arr = malloc(sizeof(Product) * MAX_CART_SIZE);
 					p_arr = getCartByCustomer(q.user_id, p_arr);
 					write(nsd, p_arr, sizeof(Product) * MAX_CART_SIZE);
+					free(p_arr);
 				}
 				else if (q.query_num == 3)
 				{
